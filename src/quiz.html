@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../node_modules/materialize-css/dist/css/materialize.min.css">
+    <link rel="stylesheet" href="../fonts/icons.css">
+  <link rel="stylesheet" href="../css/quiz.css">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="../stylesheets/style.css" />
+    <link rel="stylesheet" href="../fonts/font-awesome-4.3.0/css/font-awesome.min.css" />
+    <script src="../js/modernizr.custom.js"></script>
+  <link rel="stylesheet" href="../stylesheets/normalize.css"/>
+  <title>Quiz App</title>
+ 
+</head>
+<body>
+  <section class="row">
+    
+  <div>
+  <div class="header accent-5" style="background-color: #04043E">
+    <img style="width: 9%; height: 9%;" src="../assets/img/kit-11.png"/>
+    <div style="margin: auto;">
+    <h1 class="logo" style="color: white;"><b>Mathemathical Test</b></h1>
+    </div>
+    <h1 id="timer">00:00</h1>
+  </div>
+  </div>
+    <!-- <div class="grid" style="margin-top: 10px;">
+      <video id="video-preview" controls autoplay></video>
+    </div> -->
+  <div class = "bodyDiv">
+
+<!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
+<!-- My Phone Number & Dial Areas -->
+<!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-= -->
+
+    
+<div id="vid-box"></div>
+    
+    
+ <div id="stream-info" hidden="true">
+        <button id="end" onclick="end()" hidden="true">Done</button>
+        <img src="../img/person_dark.png"/>
+        <span id="here-now">0</span>       
+</div> 
+
+    
+<form name="streamForm" id="stream" action="#" onsubmit="return errWrap(stream,this);">
+    <!-- <span class="input input--nao"> -->
+        <input value="KIT" class="input__field input__field--nao" type="hidden" name="streamname" id="streamname" readonly="readonly"/>
+                <!-- <label class="input__label input__label--nao" for="streamname">
+                    <span class="input__label-content input__label-content--nao">        
+                    </span>
+                </label> -->
+            <!-- <svg class="graphic graphic--nao" width="300%" height="100%" viewBox="0 0 1200 60" preserveAspectRatio="none">
+                <path d="M0,56.5c0,0,298.666,0,399.333,0C448.336,56.5,513.994,46,597,46c77.327,0,135,10.5,200.999,10.5c95.996,0,402.001,0,402.001,0"/>
+            </svg> -->
+    <!-- </span> -->
+
+       <input id="clickButton" type="submit"  value="Stream" name="stream_submit" style="margin-top: 40px; margin-left:-10px; display: none;">
+            <!-- <i class="cbutton__icon fa fa-fw fa fa fa-video-camera"></i> -->
+        <!-- </button> -->
+</form>
+<!-- <form name="watchForm" id="watch" action="#" onsubmit="return errWrap(watch,this);">
+    <span class="input input--nao">
+        <input class="input__field input__field--nao" type="text" name="number" placeholder="Enter Stream To Watch!"/>
+                <label class="input__label input__label--nao" for="number">
+                    <span class="input__label-content input__label-content--nao">        
+                    </span>
+                </label>
+            <svg class="graphic graphic--nao" width="300%" height="100%" viewBox="0 0 1200 60" preserveAspectRatio="none">
+                <path d="M0,56.5c0,0,298.666,0,399.333,0C448.336,56.5,513.994,46,597,46c77.327,0,135,10.5,200.999,10.5c95.996,0,402.001,0,402.001,0"/>
+            </svg>
+    </span>
+
+       <button class="cbutton cbutton--effect-radomir" type="submit" value="Watch" style="margin-top: 40px; margin-left:-10px">
+                <i class="cbutton__icon fa fa-fw fa fa-eye"></i>
+        </button>
+</form>   -->
+    
+<!-- <div id="inStream" class="ptext">
+  Embed Style: <button onclick="genEmbed(400,600)">Tall</button><button onclick="genEmbed(600,400)">Wide</button><button onclick="genEmbed(500,500)">Square</button><br>
+  <div id="embed-code"></div>
+  <div id="embed-demo"></div>
+</div>
+    
+<div id="logs" class="ptext" style="background-color:white"></div>
+
+<div class="ptext">
+    <p><b>To Use:</b></p>
+    <p>Type a channel to stream to and click Stream.</p>
+    <p>In a separate browser window, join the steam you created.</p>
+</div> -->
+<!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- -->
+<!-- WebRTC Peer Connections -->
+<!-- =-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+<script src="https://cdn.pubnub.com/pubnub.min.js"></script>
+<script src="../js/webrtc.js"></script>
+<script src="../js/rtc-controller.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+window.onload = function(){
+  document.getElementById('clickButton').click();
+}
+
+var video_out  = document.getElementById("vid-box");
+var embed_code = document.getElementById("embed-code");
+var embed_demo = document.getElementById("embed-demo");
+var here_now   = document.getElementById('here-now');
+var stream_info= document.getElementById('stream-info');
+var end_stream = document.getElementById('end');
+
+var streamName;
+
+function stream(form) {
+  streamName = form.streamname.value || Math.floor(Math.random()*100)+'';
+  var phone = window.phone = PHONE({
+      number        : streamName, // listen on username line else random
+      publishKey: 'pub-c-99c32c59-0220-4d18-90eb-b6c5acc49e63',
+      subscribeKey: 'sub-c-b1d59faa-998c-11e8-9a7c-62794ce13da1',
+      oneway        : true,
+      broadcast     : true
+  });
+  //phone.debug(function(m){ console.log(m); })
+  var ctrl = window.ctrl = CONTROLLER(phone);
+  ctrl.ready(function(){
+    form.streamname.style.background="#55ff5b";
+    form.streamname.value = phone.number(); 
+    // form.stream_submit.hidden="true"; 
+    ctrl.addLocalStream(video_out);
+    ctrl.stream();
+        stream_info.hidden=true;
+        end_stream.hidden =true;
+    addLog("Streaming to " + streamName); 
+  });
+  ctrl.receive(function(session){
+      session.connected(function(session){ addLog(session.number + " has joined."); });
+      session.ended(function(session) { addLog(session.number + " has left."); console.log(session)});
+  });
+  ctrl.streamPresence(function(m){
+    here_now.innerHTML=m.occupancy;
+    addLog(m.occupancy + " currently watching.");
+  });
+  return false;
+}
+
+function watch(form){
+  var num = form.number.value;
+  var phone = window.phone = PHONE({
+      number        : "Viewer" + Math.floor(Math.random()*100), // listen on username line else random
+      publishKey: 'pub-c-99c32c59-0220-4d18-90eb-b6c5acc49e63',
+      subscribeKey: 'sub-c-b1d59faa-998c-11e8-9a7c-62794ce13da1',
+      oneway        : true
+  });
+  var ctrl = window.ctrl = CONTROLLER(phone);
+  ctrl.ready(function(){
+    ctrl.isStreaming(num, function(isOn){
+      if (isOn) ctrl.joinStream(num);
+      else alert("User is not streaming!");
+    });
+    addLog("Joining stream  " + num); 
+  });
+  ctrl.receive(function(session){
+      session.connected(function(session){ 
+            video_out.appendChild(session.video); 
+            addLog(session.number + " has joined.");
+            stream_info.hidden=false;
+        });
+      session.ended(function(session) { addLog(session.number + " has left."); });
+  });
+  ctrl.streamPresence(function(m){
+    here_now.innerHTML=m.occupancy;
+    addLog(m.occupancy + " currently watching.");
+  });
+  return false;
+}
+
+function getVideo(number){
+  return $('*[data-number="'+number+'"]');
+}
+
+function addLog(log){
+  $('#logs').append("<p>"+log+"</p>");
+}
+
+function end(){
+  if (!window.phone) return;
+  ctrl.hangup();
+    video_out.innerHTML = "";
+//  phone.pubnub.unsubscribe(); // unsubscribe all?
+}
+
+// function genEmbed(w,h){
+//  if (!streamName) return;
+//  var url = "http://kevingleason.me/SimpleRTC/embed.html?stream=" + streamName;
+//  var embed    = document.createElement('iframe');
+//  embed.src    = url;
+//  embed.width  = w;
+//  embed.height = h;
+//  embed.setAttribute("frameborder", 0);
+//  embed_demo.innerHTML = "<a href='embed_demo.html?stream="+streamName+"&width="+w+"&height="+h+"'>Embed Demo</a>" 
+//  embed_code.innerHTML = 'Embed Code: ';
+//  embed_code.appendChild(document.createTextNode(embed.outerHTML));
+// }
+
+function errWrap(fxn, form){
+  try {
+    return fxn(form);
+  } catch(err) {
+    alert("WebRTC is currently only supported by Chrome, Opera, and Firefox");
+    return false;
+  }
+}
+
+</script>
+
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new
+    Date();a=s.createElement(o),
+    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-46933211-3', 'auto');
+  ga('send', 'pageview');
+
+</script>
+
+</div>
+    <div class="left col m3.8">
+      <div class="card">
+        <div class="card-content q-jump-container" style="margin-left: 10px;">
+          
+        </div>
+      </div>
+      <a style="background-color: #04043E;" class="btn waves-effect waves-light accent-4
+
+
+ submit-btn col m12">Submite to Next Test<i class=" material-icons right">send</i></a>
+
+    </div>
+    <div class="main col m9" style="margin-left: 170px;">
+      <div class="question">
+        <div class="card" style="color: black;">
+          <div class="card-content">
+            <b><p class="question-content"></p></b>
+          </div>
+        </div>
+      </div>
+      <div class="answers card">
+        <ul id="q-options" class="collection card-content">
+          <li class="collection-item">
+            <input type="radio" name="options" value="1" id="option1"  />
+            <label for="option1" class="option"></label>
+          </li>
+          <li class="collection-item">
+            <input type="radio" name="options" value="2" id="option2" />
+            <label for="option2" class="option"></label>
+          </li>
+          <li class="collection-item">
+            <input type="radio" name="options" value="3" id="option3" />
+            <label for="option3" class="option"></label>
+          </li>
+          <li class="collection-item">
+            <input type="radio" name="options" value="4" id="option4" />
+            <label for="option4" class="option"></label>
+          </li>
+
+        </ul>
+      </div>
+      <div class="bcontainer">
+        <a class="btn waves-effect waves-light right nxt" style="background-color: #953F06;">Next<i class=" material-icons right">send</i></a>
+        <a class="btn waves-effect waves-light left prev" style="background-color: #953F06;">Previous<i class="rotate material-icons left">send</i></a>
+      </div>
+    </div>
+  </section>
+  <script src='../js/responsivevoice.js'></script>
+  <script>
+window.onscroll = function() {myFunction()};
+
+var navbar = document.getElementById("navbar");
+var sticky = navbar.offsetTop;
+
+function myFunction() {
+  if (window.pageYOffset >= sticky) {
+    navbar.classList.add("sticky")
+  } else {
+    navbar.classList.remove("sticky");
+  }
+}
+</script>
+<script>
+  window.annyang = require('annyang')
+  window.$ = window.jQuery = require("jquery")
+  window.localforage = require("localforage")
+  require("../js/timer.js")
+  require("../js/quiz.js")
+  require("materialize-css")
+</script>
+<!-- <script src="https://cdn.webrtc-experiment.com/RecordRTC.js"></script>
+<script src="https://webrtc.github.io/adapter/adapter-latest.js"></script> -->
+<!-- <script>
+var videoPreview = document.getElementById('video-preview');
+// var canvasPreview = document.getElementById('canvas-preview');
+
+var logoImage = document.getElementById('logo-image');
+var waitImage = document.getElementById('wait-image');
+
+navigator.mediaDevices.getUserMedia({video: true, audio: true}).then(function(camera) {
+    videoPreview.muted = true;
+    setSrcObject(camera, videoPreview);
+    videoPreview.play();
+
+    var canvas = document.createElement('canvas');
+    var context = canvas.getContext('2d');
+
+    canvas.style = 'position: absolute; top: 0; left: 0; opacity: 0; margin-top: -9999999999; margin-left: -9999999999; top: -9999999999; left: -9999999999; z-index: -1;';
+    document.body.appendChild(canvas);
+
+    var canvasStream = canvas.captureStream();
+
+    var audioPlusCanvasStream = new MediaStream();
+    canvasStream.getVideoTracks().forEach(function(videoTrack) {
+        audioPlusCanvasStream.addTrack(videoTrack);
+    });
+    camera.getAudioTracks().forEach(function(audioTrack) {
+        audioPlusCanvasStream.addTrack(audioTrack);
+    });
+
+    var recorder = RecordRTC(audioPlusCanvasStream, {
+        type: 'video'
+    });
+
+    // setSrcObject(canvasStream, canvasPreview);
+    // canvasPreview.play();
+
+    recorder.setRecordingDuration(100 * 1000).onRecordingStopped(function() {
+        var blob = recorder.getBlob();
+        recorder = null;
+        camera.stop();
+
+    //     canvasPreview.src = canvasPreview.srcObject = null;
+
+        videoPreview.muted = false;
+        videoPreview.src = URL.createObjectURL(blob);
+        videoPreview.play();
+    });
+
+    recorder.startRecording();
+
+    (function looper() {
+        if(!recorder) return; // ignore/skip on stop-recording
+
+        canvas.width = videoPreview.clientWidth;
+        canvas.height = videoPreview.clientHeight;
+
+        context.clearRect(500, 500, canvas.width, canvas.height);
+        context.save();
+        context.translate(canvas.width, 0);
+        context.scale(-1, 1);
+        context.drawImage(videoPreview, 0, 0, canvas.width, canvas.height);
+        context.setTransform(1, 0, 0, 1, 0, 0);
+        context.restore();
+
+        // repeat (looper)
+        setTimeout(looper, 10);
+    })();
+}).catch(function(error) {
+    alert('Unable to capture camera. Please check console logs.');
+    console.error(error);
+});
+</script> -->
+
+</body>
+</html>

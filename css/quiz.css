@@ -1,0 +1,58 @@
+h1 {
+  margin: 0 20px;
+  padding: 0;
+  font-size: 2.2em;
+  font-weight: 500;
+}
+.header {
+  margin: 0;
+  color: white;
+  padding: 18px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.label {
+  color: inherit;
+}
+.rotate {
+  transform: rotate(180deg);
+}
+.btn {
+  margin: 5px;
+}
+.resulthead {
+  margin: 50px;
+}
+.close {
+  display: block;
+  margin:auto;
+}
+
+#stream {
+  margin: 15px;  
+}
+
+#video {
+  float: left;
+  padding-top: 8px;
+  width: 200px;
+  height: 150px;
+}
+
+.question-container {
+  float: left;
+  margin-left: 5px;
+  width: 60%;
+}
+
+.submit-test {
+  float: left;
+  width: 18%;
+  text-align: center;
+}
+
+.row .col{
+  padding-left: 0.75rem;
+  padding-right: 0rem;
+}

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../node_modules/materialize-css/dist/css/materialize.min.css">
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/smoothness/jquery-ui.css">
+  <title>Online Examination System</title>
+</head>
+<body>
+  <!-- sokmeng pop up -->
+  <style>
+    .modal {
+    display: none; /* Hidden by default */
+    position: fixed;  /*Stay in place*/
+     /*overflow:scroll;*/
+    z-index: 1; /* Sit on top */
+    padding-top: 50px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 50%; /* Full width */
+    height: 30%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    background-color: #fefefe;
+    margin: auto;
+    padding: 100px;
+    border: 1px solid #888;
+    width: 90%;
+}
+
+/* The Close Button */
+.close {
+    color: #aaaaaa;
+    float: right;
+    margin-top: -10px;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+  </style>
+  <div class="row">
+  <img style="width: 15%; height: 15%; margin: 20px 20px;" src="../assets/img/kit-11.png"/>
+  
+  </div>
+  <div>
+    <table>
+      <tr>
+        <td>
+      <div class="row">
+
+       <form class="col s12">
+        <div class="center">
+        <h4 style="color: #830805;"><b>KIT ONLINE ENTRANCE EXAM</b></h4>
+        </div>
+         <div class="row">
+           <div class="input-field col s8 offset-s2">
+             <input style="color: white;" id="email" name="email" type="email" class="validate" pattern="^[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+(?:\\.[a-zA-Z0-9_!#$%&'*+/=?`{|}~^-]+)*@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$"  required="true">
+             <label for="email">Email</label>
+           </div>
+         </div>
+         <div class="row">
+           <div class="input-field col s8 offset-s2">
+             <input style="color: white;" id="password" type="password" class="validate">
+             <label for="number">Password</label>
+           </div>
+         </div>
+         <div class="row">
+           <div class="col s8 offset-s2">
+             <p class="agreement">
+               <input type="checkbox" id="agreement" />
+               <label for="agreement">I agree to KIT entrance exam
+                <!-- sokmeng  -->
+                <a href="#exampleModal" id="myBtn">code of conducts</a>
+                <div id="myModal" class="modal">
+                  <div class="modal-content" >
+                  <span class="close">&times;</span>
+                  <p>Cheating is not allowed during examination. If we find out you cheat, you
+                  'll fail automatically. Using <strong style="color: blue">ALT + TAB</strong> key is prohibited <strong style="color: red"> !</strong></p>
+                </div>
+                </div>
+                <!--  -->
+               </label>
+             </p>
+           </div>
+         </div>
+       </form>
+       </div>
+      </td>
+      <td>
+       <div class="row">
+         <div class="col s12">
+           <a class="waves-effect waves-light accent-3 btn-large login" style="background-color: #953F06;">Login</a>
+         </div>
+       </div>
+       </td>
+       </tr>
+       </table>
+     </div>
+
+  <!-- </div> -->
+
+
+</body>
+<script>
+
+ //sokmeng pop up js
+
+  var modal = document.getElementById('myModal');
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks the button, open the modal 
+btn.onclick = function() {
+    modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+    modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+    if (event.target == modal) {
+        modal.style.display = "none";
+    }
+}
+// end
+  window.$ = window.jQuery = require("jquery")
+  window.localforage = require("localforage")
+  require("../renderer.js")
+  require("materialize-css")
+
+</script>
+</html>

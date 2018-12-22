@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <link rel="stylesheet" href="../node_modules/materialize-css/dist/css/materialize.min.css">
+    <link rel="stylesheet" href="../fonts/icons.css">
+  <link rel="stylesheet" href="../css/iqtest.css">
+  <title>Online Test</title>
+</head>
+<body>
+  <div class="header accent-5" style="background-color: #04043E">
+    <img style="width: 9%; height: 9%;" src="../assets/img/kit-11.png"/>
+    <div style="margin: auto;">
+    <h1 class="logo" style="color: white;"><b>Test Finished!</b></h1>
+    </div>
+    <h1>Time Up</h1>
+  </div>
+  <section class="container" style="margin: 200px;">
+    <div class="row">
+      <div class="offset-m2 col m8">
+        <div class="card">
+          <div class="card-content">
+            <h4 style="text-align:center;">You have completed KIT entrance exam!</h4>
+            <p>
+              We will send your test result to <b><a id="email"></a></b> within 7 days. We are looking forward to have you join our institution.
+            </p>
+          </div>
+        </div>
+        <a class="waves-effect waves-red btn close">Close</a>
+      </div>
+    </div>
+  </section>
+  <script>
+    window.$ = window.jQuery = require("jquery")
+    window.localforage = require("localforage")
+    require("../js/results.js")
+    require("materialize-css")
+  </script>
+</body>
+</html>
